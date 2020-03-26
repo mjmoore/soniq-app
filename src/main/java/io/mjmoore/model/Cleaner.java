@@ -1,7 +1,11 @@
 package io.mjmoore.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 public interface Cleaner {
 
@@ -28,9 +32,13 @@ public interface Cleaner {
         private final int capacity;
     }
 
-    @Data(staticConstructor = "of")
+    @EqualsAndHashCode
+    @NoArgsConstructor
+    @AllArgsConstructor(staticName = "of")
     class Assignment {
-        private final int seniors;
-        private final int juniors;
+        @Getter
+        private int seniors;
+        @Getter
+        private int juniors;
     }
 }

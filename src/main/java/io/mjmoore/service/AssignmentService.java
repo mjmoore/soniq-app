@@ -1,7 +1,6 @@
 package io.mjmoore.service;
 
 import io.mjmoore.dto.InputDto;
-import io.mjmoore.dto.OutputDto;
 import io.mjmoore.model.Cleaner;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -10,24 +9,24 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class AssignmentService {
 
-    public OutputDto getAssignments(final InputDto dto) {
+    public List<Cleaner.Assignment> getAssignments(final InputDto dto) {
 
         val senior = Cleaner.of(Cleaner.Type.Senior, dto.getSeniorCapacity());
         val junior = Cleaner.of(Cleaner.Type.Junior, dto.getJuniorCapacity());
 
-        val output = OutputDto.builder();
+
 
         val calculator = new AssignmentCalculator(senior, junior);
 
-        return output.addAssignments(dto.getRooms()
+        return dto.getRooms()
                 .stream().map(calculator::assign)
-                .collect(Collectors.toList()))
-                .build();
+                .collect(Collectors.toList());
     }
 
     @RequiredArgsConstructor

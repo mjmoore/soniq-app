@@ -1,7 +1,6 @@
 package io.mjmoore.service;
 
 import io.mjmoore.dto.InputDto;
-import io.mjmoore.dto.OutputDto;
 import lombok.val;
 import lombok.var;
 import org.junit.jupiter.api.Test;
@@ -24,9 +23,9 @@ public class AssignmentServiceTest {
         val dto = new InputDto(Collections.singletonList(35), 10, 6);
         val assignments = service.getAssignments(dto);
 
-        assertEquals(1, assignments.getAssignments().size());
+        assertEquals(1, assignments.size());
 
-        val assignment = assignments.getAssignments().get(0);
+        val assignment = assignments.get(0);
         assertEquals(3, assignment.getSeniors());
         assertEquals(1, assignment.getJuniors());
     }
@@ -36,13 +35,13 @@ public class AssignmentServiceTest {
         val dto = new InputDto(Arrays.asList(35, 21), 10, 6);
         val assignments = service.getAssignments(dto);
 
-        assertEquals(2, assignments.getAssignments().size());
+        assertEquals(2, assignments.size());
 
-        var assignment = assignments.getAssignments().get(0);
+        var assignment = assignments.get(0);
         assertEquals(3, assignment.getSeniors());
         assertEquals(1, assignment.getJuniors());
 
-        assignment = assignments.getAssignments().get(1);
+        assignment = assignments.get(1);
         assertEquals(1, assignment.getSeniors());
         assertEquals(2, assignment.getJuniors());
     }
