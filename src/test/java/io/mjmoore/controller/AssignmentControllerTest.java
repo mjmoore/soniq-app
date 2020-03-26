@@ -50,8 +50,6 @@ class AssignmentControllerTest {
         when(assignmentService.getAssignments(any(InputDto.class)))
                 .thenReturn(dummyAssignment);
 
-        val thing = assignmentService.getAssignments(dummyDto);
-
         final MockHttpServletResponse body = assignmentController.perform(post("/assignments")
                     .content(mapper.writeValueAsString(dummyDto))
                     .contentType(MediaType.APPLICATION_JSON))
