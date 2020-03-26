@@ -28,7 +28,7 @@ public interface Cleaner {
         private final int capacity;
     }
 
-    @Builder
+    @Data(staticConstructor = "of")
     class Assignment {
         private final int seniors;
         private final int juniors;
