@@ -1,0 +1,33 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '2.2.5.RELEASE'
+    id "io.spring.dependency-management" version "1.0.9.RELEASE"
+
+    id "io.freefair.lombok" version "5.0.0-rc6"
+}
+
+group 'io.mjmoore'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 13
+
+repositories {
+    mavenCentral()
+}
+
+test.useJUnitPlatform()
+
+dependencies {
+//    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa'
+//    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-rest'
+    implementation group: 'com.h2database', name: 'h2'
+
+//    implementation group: 'org.modelmapper', name: 'modelmapper', version: '2.3.6'
+
+    testImplementation(group: 'org.springframework.boot', name: 'spring-boot-starter-test') {
+        exclude group: 'junit', module: 'junit'
+    }
+
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api'
+
+}
