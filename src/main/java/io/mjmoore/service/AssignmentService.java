@@ -3,9 +3,12 @@ package io.mjmoore.service;
 import io.mjmoore.dto.InputDto;
 import io.mjmoore.dto.OutputDto;
 import io.mjmoore.model.Cleaner;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.stream.Collectors;
 
 public class AssignmentService {
@@ -32,11 +35,14 @@ public class AssignmentService {
         private final Cleaner junior;
 
         private int assignedCapacity = 0;
-
         private int seniors = 0;
-        private int juniors = 0;
 
         public Cleaner.Assignment assign(final int roomSize) {
+
+            this.assignedCapacity = 0;
+            this.seniors = 0;
+
+            val assignments = new ArrayList<Assignment>();
 
             while(assignedCapacity < roomSize) {
 
@@ -44,27 +50,23 @@ public class AssignmentService {
 
                 final int remainingCapacity = roomSize - assignedCapacity;
 
-                final int seniorsToComplete = getAssignmentsForCompletion(senior, remainingCapacity);
                 final int juniorsToComplete = getAssignmentsForCompletion(junior, remainingCapacity);
 
-                // Prefer juniors to seniors
-                if(seniorsToComplete > juniorsToComplete) {
-                    assignSenior();
-                    continue;
-                }
+                // Create assignment with remaining juniors and store
+                assignments.add(Assignment.of(
+                        Cleaner.Assignment.of(this.seniors, juniorsToComplete), senior, junior));
 
-                assignJunior();
+                // Assign an additional senior until capacity is reached or exceeded
+                assignSenior();
             }
 
-            return Cleaner.Assignment.builder()
-                    .juniors(this.juniors)
-                    .seniors(this.seniors)
-                    .build();
+            assignments.add(Assignment.of(
+                    Cleaner.Assignment.of(this.seniors, 0), senior, junior));
 
+            return Collections.min(assignments, Assignment::compareTo).getAssignment();
         }
 
         private boolean assignInitialSenior() {
-            // Always one senior
             if(seniors != 0) {
                 return false;
             }
@@ -76,11 +78,6 @@ public class AssignmentService {
         private void assignSenior() {
             seniors++;
             assignedCapacity += senior.getCapacity();
-        }
-
-        private void assignJunior() {
-            juniors++;
-            assignedCapacity += junior.getCapacity();
         }
 
         /**
@@ -96,13 +93,32 @@ public class AssignmentService {
          * Assignments for completion = 3
          */
         private int getAssignmentsForCompletion(final Cleaner cleaner, final int capacity) {
-            final int assignmentsToComplete = capacity % cleaner.getCapacity();
+            final int assignmentsToComplete = capacity / cleaner.getCapacity();
 
             if(assignmentsToComplete * cleaner.getCapacity() < capacity) {
                 return assignmentsToComplete + 1;
             }
 
             return assignmentsToComplete;
+        }
+    }
+
+    @Data(staticConstructor = "of")
+    private static class Assignment implements Comparable<Assignment> {
+
+        private final Cleaner.Assignment assignment;
+
+        private final Cleaner senior;
+        private final Cleaner junior;
+
+        @Override
+        public int compareTo(final Assignment assignment) {
+            return getTotalCapacity().compareTo(assignment.getTotalCapacity());
+        }
+
+        public Integer getTotalCapacity() {
+            return (assignment.getJuniors() * junior.getCapacity()) +
+                   (assignment.getSeniors() * senior.getCapacity());
         }
     }
 }
