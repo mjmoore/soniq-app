@@ -22,7 +22,7 @@ dependencies {
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web'
 
     // Lambda zip
-    implementation group: 'org.jooq', name: 'jool', version: '0.9.12'
+    testImplementation group: 'org.jooq', name: 'jool', version: '0.9.12'
 
     testImplementation(group: 'org.springframework.boot', name: 'spring-boot-starter-test') {
         exclude group: 'junit', module: 'junit'
