@@ -6,11 +6,13 @@ import io.mjmoore.model.Cleaner;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.stream.Collectors;
 
+@Service
 public class AssignmentService {
 
     public OutputDto getAssignments(final InputDto dto) {
