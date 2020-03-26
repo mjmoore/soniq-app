@@ -2,9 +2,9 @@ package io.mjmoore.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.springframework.lang.NonNull;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
@@ -15,9 +15,11 @@ public class InputDto {
     @NotEmpty
     private List<Integer> rooms;
 
+    @NotNull
     @PositiveOrZero
-    private int seniorCapacity;
+    private Integer senior;
 
+    @NotNull
     @PositiveOrZero
-    private int juniorCapacity;
+    private Integer junior;
 }

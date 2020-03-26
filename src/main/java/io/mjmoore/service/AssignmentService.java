@@ -17,8 +17,8 @@ public class AssignmentService {
 
     public List<Cleaner.Assignment> getAssignments(final InputDto dto) {
 
-        val senior = Cleaner.of(Cleaner.Type.Senior, dto.getSeniorCapacity());
-        val junior = Cleaner.of(Cleaner.Type.Junior, dto.getJuniorCapacity());
+        val senior = Cleaner.of(Cleaner.Type.Senior, dto.getSenior());
+        val junior = Cleaner.of(Cleaner.Type.Junior, dto.getJunior());
 
 
 
