@@ -37,6 +37,12 @@ public class AssignmentService {
         private int assignedCapacity = 0;
         private int seniors = 0;
 
+        /**
+         * Calculates all iterations of seniors with remaining juniors for a room
+         * and returns the permutation which closely fits the capacity requirement.
+         * @param roomSize
+         * @return
+         */
         public Cleaner.Assignment assign(final int roomSize) {
 
             this.assignedCapacity = 0;
@@ -55,6 +61,11 @@ public class AssignmentService {
                 // Create assignment with remaining juniors and store
                 assignments.add(Assignment.of(
                         Cleaner.Assignment.of(this.seniors, juniorsToComplete), senior, junior));
+
+                // Short circuit algorithm, we've already found the best solution
+                if(senior.getCapacity() == 0) {
+                    break;
+                }
 
                 // Assign an additional senior until capacity is reached or exceeded
                 assignSenior();
@@ -93,6 +104,12 @@ public class AssignmentService {
          * Assignments for completion = 3
          */
         private int getAssignmentsForCompletion(final Cleaner cleaner, final int capacity) {
+
+            // If cleaners can't clean, assume an "infinite" amount needed
+            if(cleaner.getCapacity() <= 0) {
+                return Integer.MAX_VALUE;
+            }
+
             final int assignmentsToComplete = capacity / cleaner.getCapacity();
 
             if(assignmentsToComplete * cleaner.getCapacity() < capacity) {
@@ -113,12 +130,35 @@ public class AssignmentService {
 
         @Override
         public int compareTo(final Assignment assignment) {
+            // Secondary comparison on amount of people required
+            if(getTotalCapacity().equals(assignment.getTotalCapacity())) {
+                return getTotalPeople().compareTo(assignment.getTotalPeople());
+            }
+
             return getTotalCapacity().compareTo(assignment.getTotalCapacity());
         }
 
         public Integer getTotalCapacity() {
-            return (assignment.getJuniors() * junior.getCapacity()) +
+
+            // If either type can't clean, assume an "infinite" amount required to complete job
+            val infiniteSeniors = assignment.getSeniors() == Integer.MAX_VALUE;
+            val infiniteJuniors = assignment.getJuniors() == Integer.MAX_VALUE;
+            if(infiniteJuniors || infiniteSeniors) {
+                return Integer.MAX_VALUE;
+            }
+
+            val capacity = (assignment.getJuniors() * junior.getCapacity()) +
                    (assignment.getSeniors() * senior.getCapacity());
+
+            if(capacity <= 0) {
+                return Integer.MAX_VALUE;
+            }
+
+            return capacity;
+        }
+
+        public Integer getTotalPeople() {
+            return assignment.getSeniors() + assignment.getJuniors();
         }
     }
 }
