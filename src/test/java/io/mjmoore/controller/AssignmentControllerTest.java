@@ -16,14 +16,17 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import java.util.Collections;
 import java.util.List;
 
+import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @AutoConfigureMockMvc
@@ -57,5 +60,15 @@ class AssignmentControllerTest {
                 .andReturn().getResponse();
 
         assertEquals(dummyAssignment, mapper.readValue(body.getContentAsString(), type));
+    }
+
+    @Test
+    public void malformedAssignmentsRequest() throws Exception {
+        final InputDto badRequestDto = new InputDto(Collections.singletonList(0), null, 0);
+
+        assignmentController.perform(post("/assignments")
+                    .content(mapper.writeValueAsString(badRequestDto))
+                    .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
     }
 }
